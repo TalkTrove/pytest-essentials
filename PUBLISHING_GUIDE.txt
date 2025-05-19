@@ -1,0 +1,88 @@
+# Guide to Publishing pytest-essentials to PyPI
+
+This guide outlines the steps to build and publish new versions of the `pytest-essentials` package to PyPI (and TestPyPI).
+
+## Prerequisites
+
+1.  **Accounts:**
+    *   PyPI: [https://pypi.org/](https://pypi.org/)
+    *   TestPyPI: [https://test.pypi.org/](https://test.pypi.org/)
+2.  **API Tokens:** Generate API tokens from your PyPI and TestPyPI accounts for uploading packages.
+3.  **Virtual Environment:** It's highly recommended to perform these steps within a dedicated virtual environment.
+
+## Publishing Steps
+
+**1. Pre-flight Checks & Version Update:**
+
+   *   **Ensure all local tests pass:**
+     ```bash
+     pytest tests/
+     ```
+   *   **Update the version number** in `pyproject.toml` (e.g., `version = "0.1.1"`).
+     PyPI does not allow re-uploading the same version.
+
+**2. Install/Update Build Tools:**
+
+   Ensure you have the latest `build` and `twine` packages.
+   ```bash
+   pip install --upgrade build twine
+   ```
+
+**3. Clean Previous Builds (Optional but Recommended):**
+
+   Remove any existing `dist/`, `build/`, and `*.egg-info/` directories to ensure a clean build.
+   ```bash
+   rm -rf dist build *.egg-info pytest_essentials.egg-info
+   ```
+   *(Use `del /S /Q dist build *.egg-info pytest_essentials.egg-info` on Windows Command Prompt, or `Remove-Item -Recurse -Force dist, build, *.egg-info, pytest_essentials.egg-info` on PowerShell)*
+
+**4. Build the Package:**
+
+   This command creates the source archive (`.tar.gz`) and the built distribution (`.whl`) in the `dist/` directory.
+   ```bash
+   python -m build
+   ```
+
+**5. Upload to TestPyPI (Highly Recommended for Testing):**
+
+   This allows you to test the package and its listing before publishing to the official PyPI.
+   ```bash
+   twine upload --repository testpypi dist/*
+   ```
+   When prompted for username, enter `__token__`. For the password, paste your **TestPyPI API token**.
+
+**6. Test Installation from TestPyPI:**
+
+   In a **new, clean virtual environment**:
+   ```bash
+   # Create and activate a new virtual environment
+   # python -m venv test_env
+   # source test_env/bin/activate  (macOS/Linux)
+   # test_env\Scripts\activate     (Windows)
+
+   pip install pytest # Install pytest if not present
+   pip install --index-url https://test.pypi.org/simple/ --no-deps pytest-essentials
+   ```
+   Verify that the package installs correctly and your plugin works as expected (e.g., by running some example tests that use the plugin).
+
+**7. Upload to PyPI (Official Release):**
+
+   If everything looks good with the TestPyPI version, publish to the official PyPI repository.
+   ```bash
+   twine upload dist/*
+   ```
+   When prompted for username, enter `__token__`. For the password, paste your **official PyPI API token**.
+
+**8. Verify on PyPI:**
+
+   Check your package page on [https://pypi.org/project/pytest-essentials/](https://pypi.org/project/pytest-essentials/) (replace with your actual package name if different).
+   It might take a few minutes for the new version to appear.
+
+## Notes:
+
+*   **SPDX License:** Consider updating the license specification in `pyproject.toml` from a classifier to an SPDX expression for modern best practices (e.g., `license = {text = "MIT License"}`).
+*   **`.pypirc` file:** For convenience, you can configure a `~/.pypirc` file with your repository details and API tokens, though using API tokens directly with `twine` prompts is generally secure.
+*   **Git Tagging:** After a successful release, it's good practice to tag the commit in your Git repository:
+    ```bash
+    git tag v0.1.0 # Use the version number you just released
+    git push origin v0.1.0
