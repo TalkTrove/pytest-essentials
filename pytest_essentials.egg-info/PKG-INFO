@@ -1,3 +1,25 @@
+Metadata-Version: 2.4
+Name: pytest-essentials
+Version: 0.1.0
+Summary: A Pytest plugin providing essential utilities like soft assertions.
+Author-email: Pragadeshwar Vishnu <mkpvishnu@gmail.com>
+Project-URL: Homepage, https://github.com/TalkTrove/pytest-essentials
+Project-URL: Repository, https://github.com/TalkTrove/pytest-essentials
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pytest>=7.0
+Provides-Extra: allure
+Requires-Dist: allure-pytest>=2.9.45; extra == "allure"
+
 # Pytest Essentials
 
 A Pytest plugin providing essential utilities to enhance your testing workflow, starting with a robust Soft Assert mechanism.
